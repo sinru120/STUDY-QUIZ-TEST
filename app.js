@@ -1,3 +1,10 @@
+const SUPABASE_URL = "https://xdzchsadhwvlkembhoom.supabase.co/rest/v1/";
+const SUPABASE_KEY = "sb_publishable_Wu_E1EyLPw8GLSZPpHHO7Q_Howtd6wE";
+
+const supabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 const $ = (id) => document.getElementById(id);
 const STORAGE_KEY = "study_quiz_questions_v1";
 const WRONG_KEY = "study_quiz_wrong_v1";
