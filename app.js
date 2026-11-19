@@ -5,6 +5,7 @@ const supabase = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
+console.log("Supabase 連線物件：", supabase);
 const $ = (id) => document.getElementById(id);
 const STORAGE_KEY = "study_quiz_questions_v1";
 const WRONG_KEY = "study_quiz_wrong_v1";
