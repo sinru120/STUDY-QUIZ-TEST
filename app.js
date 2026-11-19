@@ -114,14 +114,12 @@ function renderQuiz(){
   $("quiz-progress-label").textContent='第 '+(idx+1)+' 題，共 '+total+' 題';
   $("quiz-progress").style.width=((idx+1)/total*100)+'%';
   const selected=currentQuiz.answers[q.id];
-  $("quiz-area").innerHTML='<article class="quiz-card"><div class="quiz-meta">'+esc(q.subject)+'　／　'+esc(q.chapter)+'</div><h2 class="quiz-question">'+esc(q.question)+'</h2>'+(q.image?'<img class="quiz-image" src="'+q.image+'" alt="題目圖片">':'')+'<div class="option-list">'+q.options.map((o,i)=>'<button class="option '+(selected===i?'selected':'')+'" data-option="'+i+'" '+(currentQuiz.submitted?'disabled':'')+'><span class="option-letter">'+String.fromCharCode(65+i)+'</span>'+esc(o)+'</button>').join("")+'</div>'+(currentQuiz.submitted?feedbackHTML(q,selected):'')+'<div class="quiz-actions">'+(currentQuiz.submitted?'<button class="primary-btn" id="next-question">'+(idx===total-1?'查看結果':'下一題 →')+'</button>':'<button class="primary-btn" id="submit-answer" '+(selected===undefined?'disabled':'')+'>確認答案</button>')+'</div></article>';
+  $("quiz-area").innerHTML='<article class="quiz-card"><div class="quiz-meta">'+esc(q.subject)+'　／　'+esc(q.chapter)+'</div><h2 class="quiz-question">'+esc(q.question)+'</h2>'+(q.image?'<img class="quiz-image" src="'+q.image+'" alt="題目圖片">':'')+'<div class="option-list">'+q.options.map((o,i)=>'<button class="option '+(currentQuiz.submitted?(i===q.answer?'correct':(i===selected?'incorrect':'')):(selected===i?'selected':''))+'" data-option="'+i+'" '+(currentQuiz.submitted?'disabled':'')+'><span class="option-letter">'+String.fromCharCode(65+i)+'</span>'+esc(o)+'</button>').join("")+'</div>'+(currentQuiz.submitted?feedbackHTML(q,selected):'')+'<div class="quiz-actions">'+(currentQuiz.submitted?'<button class="primary-btn" id="next-question">'+(idx===total-1?'查看結果':'下一題 →')+'</button>':'<button class="primary-btn" id="submit-answer" '+(selected===undefined?'disabled':'')+'>確認答案</button>')+'</div></article>';
   $("quiz-area").querySelectorAll("[data-option]").forEach(b=>b.addEventListener("click",()=>{currentQuiz.answers[q.id]=Number(b.dataset.option);renderQuiz();}));
   if(currentQuiz.submitted){$("next-question").addEventListener("click",nextQuestion);}else{$("submit-answer").addEventListener("click",submitAnswer);}
 }
 function feedbackHTML(q,selected){
   const good=selected===q.answer;
-  const options=$("quiz-area").querySelectorAll(".option");
-  options.forEach((el,i)=>{if(i===q.answer)el.classList.add("correct");else if(i===selected)el.classList.add("incorrect");});
   return '<div class="quiz-feedback '+(good?'good':'bad')+'"><b>'+(good?'答對了！':'再記住這個觀念！')+'</b><br>正確答案：'+String.fromCharCode(65+q.answer)+'．'+esc(q.options[q.answer])+'<br>'+esc(q.explanation||"這題尚未新增解析。")+'</div>';
 }
 function submitAnswer(){
