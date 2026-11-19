@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7f8fc">
+  <title>我的自學題庫｜Study Quiz</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="回到首頁"><span class="brand-mark">Q</span><span>我的自學題庫<small>STUDY QUIZ</small></span></a>
+    <nav class="nav">
+      <button class="nav-btn active" data-view="home">首頁</button>
+      <button class="nav-btn" data-view="manage">題庫管理</button>
+      <button class="nav-btn" data-view="wrong">錯題本</button>
+      <button class="nav-btn" data-view="records">測驗紀錄</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section id="view-home" class="view">
+      <div class="hero">
+        <div class="hero-copy">
+          <span class="eyebrow">YOUR PERSONAL STUDY SPACE</span>
+          <h1>把今天學過的，<br><em>變成明天的實力。</em></h1>
+          <p>整理自己的題庫，依照科目與章節練習，隨時回顧還不熟悉的題目。</p>
+          <button class="primary-btn" id="go-practice">開始練習 <span>→</span></button>
+        </div>
+        <div class="hero-art" aria-hidden="true"><div class="art-circle"></div><div class="paper"><span>✦</span><b>STUDY<br>SMART</b><i>✎</i></div><div class="art-dot dot-one"></div><div class="art-dot dot-two"></div></div>
+      </div>
+
+      <div class="stats-grid">
+        <article class="stat-card"><span class="stat-icon lavender">▤</span><div><strong id="stat-total">0</strong><small>題庫總題數</small></div></article>
+        <article class="stat-card"><span class="stat-icon peach">↻</span><div><strong id="stat-wrong">0</strong><small>待複習錯題</small></div></article>
+        <article class="stat-card"><span class="stat-icon mint">✓</span><div><strong id="stat-records">0</strong><small>完成測驗次數</small></div></article>
+      </div>
+
+      <section class="panel practice-panel">
+        <div class="section-heading"><div><span class="eyebrow">LET'S PRACTICE</span><h2>準備好開始了嗎？</h2></div><span class="heading-mark">✦</span></div>
+        <div class="practice-controls">
+          <label>選擇科目<select id="home-subject"><option value="">全部科目</option></select></label>
+          <label>選擇章節<select id="home-chapter"><option value="">全部章節</option></select></label>
+          <label>練習題數<select id="home-count"><option>5</option><option selected>10</option><option>15</option><option>20</option><option value="all">全部題目</option></select></label>
+          <button class="primary-btn" id="start-quiz">開始作答 →</button>
+        </div>
+      </section>
+
+      <div class="bottom-grid">
+        <section class="panel"><div class="section-heading"><div><span class="eyebrow">QUICK ACCESS</span><h2>快速入口</h2></div></div><div class="quick-links"><button class="quick-link" data-view="manage"><span class="quick-icon">＋</span><span><b>新增題目</b><small>建立自己的練習題</small></span><span class="arrow">→</span></button><button class="quick-link" data-view="wrong"><span class="quick-icon">↻</span><span><b>複習錯題</b><small>再次挑戰不熟悉的題目</small></span><span class="arrow">→</span></button></div></section>
+        <section class="tip-card"><span class="tip-star">✦</span><span class="eyebrow">A LITTLE REMINDER</span><h3>每天進步一點點，<br>就很棒了。</h3><p>練習後記得看看解析，讓每一次答錯都成為學習線索。</p></section>
+      </div>
+    </section>
+
+    <section id="view-manage" class="view hidden">
+      <div class="page-heading"><div><span class="eyebrow">QUESTION LIBRARY</span><h1>題庫管理</h1><p>新增、整理與匯入你的練習題目。</p></div><button class="primary-btn" id="new-question">＋ 新增題目</button></div>
+      <div class="toolbar panel"><input id="manage-search" type="search" placeholder="搜尋題目、科目或章節…"><select id="manage-subject"><option value="">全部科目</option></select><div class="toolbar-actions"><button class="soft-btn" id="import-btn">匯入題庫</button><button class="soft-btn" id="export-btn">匯出備份</button></div></div>
+      <div id="question-list" class="question-list"></div>
+    </section>
+
+    <section id="view-wrong" class="view hidden">
+      <div class="page-heading"><div><span class="eyebrow">REVIEW & IMPROVE</span><h1>錯題本</h1><p>把曾經答錯的題目重新練熟。</p></div><button class="primary-btn" id="retry-wrong">重新練習 →</button></div>
+      <div id="wrong-list" class="question-list"></div>
+    </section>
+
+    <section id="view-records" class="view hidden">
+      <div class="page-heading"><div><span class="eyebrow">YOUR PROGRESS</span><h1>測驗紀錄</h1><p>回顧每次練習的成果。</p></div></div>
+      <div id="record-list" class="panel record-list"></div>
+    </section>
+
+    <section id="view-quiz" class="view hidden">
+      <div class="quiz-heading"><button class="back-btn" id="exit-quiz">← 返回</button><span class="eyebrow">FOCUS MODE</span><span id="quiz-progress-label">第 1 題</span></div>
+      <div class="progress-track"><div id="quiz-progress"></div></div>
+      <div id="quiz-area"></div>
+    </section>
+  </main>
+
+  <dialog id="question-dialog" class="question-dialog">
+    <form id="question-form">
+      <div class="dialog-heading"><div><span class="eyebrow">BUILD YOUR LIBRARY</span><h2 id="dialog-title">新增題目</h2></div><button type="button" class="close-btn" id="close-dialog">×</button></div>
+      <input type="hidden" id="edit-id">
+      <div class="form-grid">
+        <label>科目<input id="q-subject" required placeholder="例如：普通生物學"></label>
+        <label>章節<input id="q-chapter" required placeholder="例如：第一章 細胞"></label>
+      </div>
+      <label>題目內容<textarea id="q-question" required rows="3" placeholder="輸入完整題目…"></textarea></label>
+      <div class="form-grid">
+        <label>選項 A<input id="q-a" required></label><label>選項 B<input id="q-b" required></label>
+        <label>選項 C<input id="q-c" required></label><label>選項 D<input id="q-d" required></label>
+      </div>
+      <div class="form-grid">
+        <label>正確答案<select id="q-answer"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select></label>
+        <label>題目圖片（選填）<input id="q-image" type="file" accept="image/*"></label>
+      </div>
+      <label>答案解析<textarea id="q-explanation" rows="3" placeholder="說明正確答案的原因…"></textarea></label>
+      <div class="dialog-actions"><button type="button" class="soft-btn" id="cancel-dialog">取消</button><button class="primary-btn" type="submit">儲存題目</button></div>
+    </form>
+  </dialog>
+
+  <input type="file" id="import-file" accept=".json,.csv,application/json,text/csv" hidden>
+  <footer>Made for your learning journey <span>✦</span></footer>
+  <script src="app.js"></script>
+</body>
+</html>
