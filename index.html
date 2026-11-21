@@ -106,6 +106,42 @@
   </dialog>
 
   <input type="file" id="import-file" accept=".json,.csv,application/json,text/csv" hidden>
+  
+<dialog id="auth-dialog" class="question-dialog">
+  <form id="auth-form">
+    <div class="dialog-heading">
+      <div>
+        <span class="eyebrow">STUDY QUIZ ACCOUNT</span>
+        <h2 id="auth-title">會員登入</h2>
+      </div>
+      <button type="button" class="close-btn" id="close-auth">×</button>
+    </div>
+
+    <label>
+      Email
+      <input id="auth-email" type="email" required
+        placeholder="輸入你的 Email">
+    </label>
+
+    <label>
+      密碼
+      <input id="auth-password" type="password" required
+        minlength="6" placeholder="至少 6 個字元">
+    </label>
+
+    <p id="auth-message"></p>
+
+    <div class="dialog-actions">
+      <button type="button" class="soft-btn" id="switch-auth">
+        還沒有帳號？註冊
+      </button>
+      <button type="submit" class="primary-btn" id="auth-submit">
+        登入
+      </button>
+    </div>
+  </form>
+</dialog>
+
   <footer>Made for your learning journey <span>✦</span></footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="app.js"></script>
