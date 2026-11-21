@@ -247,13 +247,43 @@ function handleImage(e){
   if(file.size>2*1024*1024){alert("圖片請小於 2MB，避免題庫備份檔過大。");e.target.value="";return;}
   const reader=new FileReader();reader.onload=()=>{imageDraft=reader.result;};reader.readAsDataURL(file);
 }
+
 function saveQuestion(e){
   e.preventDefault();
+
   const id=$("edit-id").value||uid();
-  const item={id,subject:$("q-subject").value.trim(),chapter:$("q-chapter").value.trim(),question:$("q-question").value.trim(),options:[$("q-a").value.trim(),$("q-b").value.trim(),$("q-c").value.trim(),$("q-d").value.trim()],answer:Number($("q-answer").value),explanation:$("q-explanation").value.trim(),image:imageDraft};
-  const index=questions.findIndex(q=>q.id===id); if(index>=0)questions[index]=item;else questions.push(item);
-  save();closeDialog();renderManage();renderHome();
+
+  const item={
+    id,
+    subject:$("q-subject").value.trim(),
+    chapter:$("q-chapter").value.trim(),
+    question:$("q-question").value.trim(),
+    options:[
+      $("q-a").value.trim(),
+      $("q-b").value.trim(),
+      $("q-c").value.trim(),
+      $("q-d").value.trim()
+    ],
+    answer:Number($("q-answer").value),
+    explanation:$("q-explanation").value.trim(),
+    image:imageDraft,
+    visibility:$("q-visibility").value
+  };
+
+  const index=questions.findIndex(q=>q.id===id);
+
+  if(index>=0){
+    questions[index]=item;
+  }else{
+    questions.push(item);
+  }
+
+  save();
+  closeDialog();
+  renderManage();
+  renderHome();
 }
+
 function deleteQuestion(id){
   if(!confirm("確定要刪除這題嗎？"))return;
   questions=questions.filter(q=>q.id!==id);wrongIds=wrongIds.filter(x=>x!==id);save();renderManage();renderHome();
