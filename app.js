@@ -136,6 +136,19 @@ checkAuth();
 
 // ===== 會員登入功能結束 =====
 
+// 取得目前登入會員
+async function getCurrentUser(){
+  const { data, error } =
+    await supabaseClient.auth.getUser();
+
+  if(error){
+    console.error("取得會員資料失敗：", error.message);
+    return null;
+  }
+
+  return data.user;
+}
+
 
 const STORAGE_KEY = "study_quiz_questions_v1";
 const WRONG_KEY = "study_quiz_wrong_v1";
