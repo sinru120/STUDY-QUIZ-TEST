@@ -377,7 +377,8 @@ function handleImage(e){
   const reader=new FileReader();reader.onload=()=>{imageDraft=reader.result;};reader.readAsDataURL(file);
 }
 
-function saveQuestion(e){
+
+async function saveQuestion(e){
   e.preventDefault();
 
   const id=$("edit-id").value||uid();
@@ -411,6 +412,22 @@ function saveQuestion(e){
   closeDialog();
   renderManage();
   renderHome();
+
+  try{
+    const user=await getCurrentUser();
+
+    if(!user){
+      alert("題目已儲存在本機，但請先登入才能同步到雲端。");
+      return;
+    }
+
+    await saveQuestionToCloud(item,user);
+
+    alert("題目已成功儲存並同步到雲端！");
+  }catch(error){
+    console.error("雲端儲存失敗：",error);
+    alert("本機儲存成功，但雲端同步失敗："+error.message);
+  }
 }
 
 function deleteQuestion(id){
