@@ -180,6 +180,41 @@ async function getSubjectId(subjectName){
   return created.id;
 }
 
+ // 取得或建立章節
+async function getChapterId(subjectId, chapterName){
+  const { data: existing, error: findError } =
+    await supabaseClient
+      .from("chapters")
+      .select("id")
+      .eq("subject_id", subjectId)
+      .eq("name", chapterName)
+      .maybeSingle();
+
+  if(findError){
+    throw findError;
+  }
+
+  if(existing){
+    return existing.id;
+  }
+
+  const { data: created, error: insertError } =
+    await supabaseClient
+      .from("chapters")
+      .insert({
+        subject_id: subjectId,
+        name: chapterName
+      })
+      .select("id")
+      .single();
+
+  if(insertError){
+    throw insertError;
+  }
+
+  return created.id;
+}
+
 
 const STORAGE_KEY = "study_quiz_questions_v1";
 const WRONG_KEY = "study_quiz_wrong_v1";
