@@ -265,6 +265,55 @@ async function saveQuestionToCloud(item, user){
   console.log("題目已同步到 Supabase！");
 }
 
+// 從 Supabase 讀取題目
+async function loadQuestionsFromCloud(){
+  const user = await getCurrentUser();
+
+  let query = supabaseClient
+    .from("questions")
+    .select(`
+      id,
+      local_id,
+      created_by,
+      question,
+      options,
+      correct_answer,
+      explanation,
+      visibility,
+      subjects(name),
+      chapters(name)
+    `);
+
+  if(user){
+    query = query.or(
+      `visibility.eq.shared,created_by.eq.${user.id}`
+    );
+  }else{
+    query = query.eq("visibility","shared");
+  }
+
+  const { data, error } = await query;
+
+  if(error){
+    console.error("讀取雲端題目失敗：",error.message);
+    return [];
+  }
+
+  return data.map(q => ({
+    id: q.local_id || q.id,
+    cloudId: q.id,
+    createdBy: q.created_by,
+    subject: q.subjects?.name || "",
+    chapter: q.chapters?.name || "",
+    question: q.question,
+    options: q.options,
+    answer: ["A","B","C","D"].indexOf(q.correct_answer),
+    explanation: q.explanation || "",
+    image: "",
+    visibility: q.visibility
+  }));
+}
+
 
 const STORAGE_KEY = "study_quiz_questions_v1";
 const WRONG_KEY = "study_quiz_wrong_v1";
