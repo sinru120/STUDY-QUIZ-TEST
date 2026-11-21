@@ -8,6 +8,134 @@ const supabaseClient = window.supabase.createClient(
 
 console.log("Supabase 初始化成功！");
 console.log("Supabase 連線物件：", supabaseClient);
+
+// ===== 會員登入功能 =====
+
+let authMode = "login";
+
+// 開啟會員視窗
+$("login-btn").addEventListener("click", () => {
+  authMode = "login";
+  updateAuthMode();
+  $("auth-message").textContent = "";
+  $("auth-dialog").showModal();
+});
+
+// 關閉會員視窗
+$("close-auth").addEventListener("click", () => {
+  $("auth-dialog").close();
+});
+
+// 切換登入與註冊
+$("switch-auth").addEventListener("click", () => {
+  authMode = authMode === "login" ? "signup" : "login";
+  updateAuthMode();
+  $("auth-message").textContent = "";
+});
+
+// 更新視窗文字
+function updateAuthMode() {
+  $("auth-title").textContent =
+    authMode === "login" ? "會員登入" : "會員註冊";
+
+  $("auth-submit").textContent =
+    authMode === "login" ? "登入" : "註冊";
+
+  $("switch-auth").textContent =
+    authMode === "login"
+      ? "還沒有帳號？註冊"
+      : "已有帳號？返回登入";
+}
+
+// 執行登入或註冊
+$("auth-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = $("auth-email").value.trim();
+  const password = $("auth-password").value;
+
+  $("auth-submit").disabled = true;
+  $("auth-message").textContent = "處理中，請稍候...";
+
+  try {
+    let result;
+
+    if (authMode === "signup") {
+      result = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo:
+            "https://sinru120.github.io/STUDY-QUIZ-TEST/"
+        }
+      });
+
+      if (result.error) throw result.error;
+
+      $("auth-message").textContent =
+        "註冊成功！請到 Email 收取驗證信，完成驗證後再登入。";
+
+    } else {
+      result = await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (result.error) throw result.error;
+
+      $("auth-message").textContent = "登入成功！";
+      $("auth-dialog").close();
+      $("auth-form").reset();
+    }
+
+  } catch (error) {
+    $("auth-message").textContent =
+      "操作失敗：" + error.message;
+  } finally {
+    $("auth-submit").disabled = false;
+  }
+});
+
+// 登出
+$("logout-btn").addEventListener("click", async () => {
+  const { error } = await supabaseClient.auth.signOut();
+
+  if (error) {
+    alert("登出失敗：" + error.message);
+  }
+});
+
+// 更新會員畫面
+function updateAuthUI(user) {
+  $("user-email").textContent =
+    user ? user.email : "尚未登入";
+
+  $("login-btn").classList.toggle("hidden", !!user);
+  $("logout-btn").classList.toggle("hidden", !user);
+}
+
+// 檢查目前登入狀態
+async function checkAuth() {
+  const { data, error } =
+    await supabaseClient.auth.getSession();
+
+  if (error) {
+    console.error("讀取登入狀態失敗：", error.message);
+    return;
+  }
+
+  updateAuthUI(data.session?.user || null);
+}
+
+// 監聽登入狀態變化
+supabaseClient.auth.onAuthStateChange((event, session) => {
+  updateAuthUI(session?.user || null);
+});
+
+checkAuth();
+
+// ===== 會員登入功能結束 =====
+
 const $ = (id) => document.getElementById(id);
 const STORAGE_KEY = "study_quiz_questions_v1";
 const WRONG_KEY = "study_quiz_wrong_v1";
