@@ -8,7 +8,7 @@ const supabaseClient = window.supabase.createClient(
 
 console.log("Supabase 初始化成功！");
 console.log("Supabase 連線物件：", supabaseClient);
-
+const $ = (id) => document.getElementById(id);
 // ===== 會員登入功能 =====
 
 let authMode = "login";
@@ -136,7 +136,7 @@ checkAuth();
 
 // ===== 會員登入功能結束 =====
 
-const $ = (id) => document.getElementById(id);
+
 const STORAGE_KEY = "study_quiz_questions_v1";
 const WRONG_KEY = "study_quiz_wrong_v1";
 const HISTORY_KEY = "study_quiz_history_v1";
