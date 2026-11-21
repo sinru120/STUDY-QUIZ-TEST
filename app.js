@@ -215,6 +215,56 @@ async function getChapterId(subjectId, chapterName){
   return created.id;
 }
 
+// 將題目儲存到 Supabase
+async function saveQuestionToCloud(item, user){
+  const subjectId = await getSubjectId(item.subject);
+  const chapterId = await getChapterId(
+    subjectId,
+    item.chapter
+  );
+
+  const cloudQuestion = {
+    local_id: item.id,
+    subject_id: subjectId,
+    chapter_id: chapterId,
+    created_by: user.id,
+    question: item.question,
+    options: item.options,
+    correct_answer: ["A", "B", "C", "D"][item.answer],
+    explanation: item.explanation,
+    visibility: item.visibility
+  };
+
+  const { data: existing, error: findError } =
+    await supabaseClient
+      .from("questions")
+      .select("id")
+      .eq("created_by", user.id)
+      .eq("local_id", item.id)
+      .maybeSingle();
+
+  if(findError) throw findError;
+
+  let result;
+
+  if(existing){
+    result = await supabaseClient
+      .from("questions")
+      .update(cloudQuestion)
+      .eq("id", existing.id);
+  }else{
+    result = await supabaseClient
+      .from("questions")
+      .insert(cloudQuestion);
+  }
+
+  if(result.error){
+    throw result.error;
+  }
+
+  console.log("題目已同步到 Supabase！");
+}
+
 
 const STORAGE_KEY = "study_quiz_questions_v1";
 const WRONG_KEY = "study_quiz_wrong_v1";
