@@ -100,6 +100,13 @@
         <label>正確答案<select id="q-answer"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select></label>
         <label>題目圖片（選填）<input id="q-image" type="file" accept="image/*"></label>
       </div>
+      <label>
+  題目分享設定
+  <select id="q-visibility">
+    <option value="private">私人題目（只有自己能看）</option>
+    <option value="shared">公開分享（所有人都能練習）</option>
+  </select>
+</label>
       <label>答案解析<textarea id="q-explanation" rows="3" placeholder="說明正確答案的原因…"></textarea></label>
       <div class="dialog-actions"><button type="button" class="soft-btn" id="cancel-dialog">取消</button><button class="primary-btn" type="submit">儲存題目</button></div>
     </form>
