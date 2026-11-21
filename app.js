@@ -212,13 +212,35 @@ function renderWrong(){
 function renderRecords(){
   $("record-list").innerHTML=history.length?history.slice().reverse().map(r=>'<div class="record-row"><div><b>'+esc(r.label)+'</b><small>'+esc(r.date)+' · '+r.total+' 題</small></div><div class="record-score">'+r.score+' 分</div></div>').join(""):'<div class="empty-state"><b>還沒有測驗紀錄</b>完成第一次練習後，紀錄就會顯示在這裡。</div>';
 }
+
 function openDialog(id=""){
-  $("question-form").reset(); $("edit-id").value=id; imageDraft="";
+  $("question-form").reset();
+  $("edit-id").value=id;
+  imageDraft="";
+
   const q=questions.find(x=>x.id===id);
+
   $("dialog-title").textContent=q?"編輯題目":"新增題目";
-  if(q){$("q-subject").value=q.subject;$("q-chapter").value=q.chapter;$("q-question").value=q.question;$("q-a").value=q.options[0];$("q-b").value=q.options[1];$("q-c").value=q.options[2];$("q-d").value=q.options[3];$("q-answer").value=String(q.answer);$("q-explanation").value=q.explanation||"";imageDraft=q.image||"";}
+
+  // 預設為私人題目
+  $("q-visibility").value=q?.visibility || "private";
+
+  if(q){
+    $("q-subject").value=q.subject;
+    $("q-chapter").value=q.chapter;
+    $("q-question").value=q.question;
+    $("q-a").value=q.options[0];
+    $("q-b").value=q.options[1];
+    $("q-c").value=q.options[2];
+    $("q-d").value=q.options[3];
+    $("q-answer").value=String(q.answer);
+    $("q-explanation").value=q.explanation||"";
+    imageDraft=q.image||"";
+  }
+
   $("question-dialog").showModal();
 }
+
 function closeDialog(){ $("question-dialog").close(); }
 function handleImage(e){
   const file=e.target.files[0]; if(!file)return;
