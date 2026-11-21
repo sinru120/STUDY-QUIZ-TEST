@@ -1,10 +1,12 @@
-const SUPABASE_URL = "https://xdzchsadhwvlkembhoom.supabase.co/rest/v1/";
-const SUPABASE_KEY = "sb_publishable_Wu_E1EyLPw8GLSZPpHHO7Q_Howtd6wE";
+const SUPABASE_URL = "https://xdzchsadhwvlkembhoom.supabase.co";
+const SUPABASE_KEY = "https://xdzchsadhwvlkembhoom.supabase.co";
 
-const supabase = window.supabase.createClient(
+const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
+
+console.log("Supabase 初始化成功！");
 console.log("Supabase 連線物件：", supabase);
 const $ = (id) => document.getElementById(id);
 const STORAGE_KEY = "study_quiz_questions_v1";
