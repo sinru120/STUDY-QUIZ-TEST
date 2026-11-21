@@ -149,6 +149,37 @@ async function getCurrentUser(){
   return data.user;
 }
 
+ // 取得或建立科目
+async function getSubjectId(subjectName){
+  const { data: existing, error: findError } =
+    await supabaseClient
+      .from("subjects")
+      .select("id")
+      .eq("name", subjectName)
+      .maybeSingle();
+
+  if(findError){
+    throw findError;
+  }
+
+  if(existing){
+    return existing.id;
+  }
+
+  const { data: created, error: insertError } =
+    await supabaseClient
+      .from("subjects")
+      .insert({ name: subjectName })
+      .select("id")
+      .single();
+
+  if(insertError){
+    throw insertError;
+  }
+
+  return created.id;
+}
+
 
 const STORAGE_KEY = "study_quiz_questions_v1";
 const WRONG_KEY = "study_quiz_wrong_v1";
