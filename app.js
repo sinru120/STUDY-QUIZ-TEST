@@ -184,7 +184,7 @@ function generateDefinitionQuestions(definitions, count){
 // ===== 四選一題目產生功能結束 =====
 // ===== PDF 自動出題按鈕 =====
 $("generate-pdf-btn").addEventListener("click", async () => {
-
+console.log("開始產生題目按鈕已被點擊！");
   const file = $("pdf-file").files[0];
   const count = Number($("pdf-question-count").value);
 
