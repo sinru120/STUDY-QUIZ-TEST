@@ -76,13 +76,43 @@ function detectQuestionType(sentence){
   return "general";
 }
 // ===== 題型辨識功能結束 =====
+
 // ===== 名詞定義擷取功能 =====
 function extractDefinitionItems(sentences){
 
   const definitions = [];
 
+  let currentTerm = "";
+
+  const knownTerms = [
+    "風邪", "寒邪", "暑邪", "濕邪", "燥邪",
+    "外寒", "中寒", "內寒",
+    "風寒", "風濕", "風燥", "風熱"
+  ];
+
   sentences.forEach(sentence => {
 
+    const line = sentence
+      .replace(/^[•●▪\-\s]+/, "")
+      .trim();
+
+    if(!line) return;
+
+    // 辨識教材中的名詞標題
+    const title = line.match(
+      /^(.{2,15}?)(?:\s*[-－]\s*\d+)?$/
+    );
+
+    if(title){
+      const term = title[1].trim();
+
+      if(knownTerms.includes(term)){
+        currentTerm = term;
+        return;
+      }
+    }
+
+    // 原本的定義句型
     const patterns = [
       /^(.{2,30}?)是指(.{5,120})$/,
       /^(.{2,30}?)係指(.{5,120})$/,
@@ -93,35 +123,41 @@ function extractDefinitionItems(sentences){
 
     for(const pattern of patterns){
 
-      const match = sentence.trim().match(pattern);
+      const match = line.match(pattern);
 
       if(match){
+        definitions.push({
+          term: match[1].trim(),
+          definition: match[2].trim(),
+          source: line,
+          type: "definition"
+        });
 
-        const term = match[1].trim();
-        const definition = match[2].trim();
-
-        if(
-          term.length >= 2 &&
-          term.length <= 30 &&
-          definition.length >= 5
-        ){
-          definitions.push({
-            term,
-            definition,
-            source: sentence,
-            type: "definition"
-          });
-        }
-
-        break;
+        return;
       }
     }
+
+    // 如果目前有教材標題，
+    // 將後面的條列內容歸到該名詞
+    if(
+      currentTerm &&
+      line.length >= 8 &&
+      !/^第\s*\d+\s*頁/.test(line)
+    ){
+      definitions.push({
+        term: currentTerm,
+        definition: line,
+        source: line,
+        type: "definition"
+      });
+    }
+
   });
 
   return definitions;
 }
 // ===== 名詞定義擷取功能結束 =====
-// ===== 名詞定義擷取功能結束 =====
+
 // ===== 四選一題目產生功能 =====
 function generateDefinitionQuestions(definitions, count){
 
