@@ -332,25 +332,17 @@ const WRONG_KEY = "study_quiz_wrong_v1";
 async function syncQuestionsFromCloud(){
   const cloudQuestions = await loadQuestionsFromCloud();
 
-  if(!cloudQuestions.length){
-    console.log("目前沒有可同步的雲端題目");
-    return;
-  }
+  // 保留尚未同步到雲端的本機題目
+  const cloudIds = new Set(
+    cloudQuestions.map(q => q.id)
+  );
 
-  cloudQuestions.forEach(cloudQ => {
-    const index = questions.findIndex(
-      localQ => localQ.id === cloudQ.id
-    );
-
-    if(index >= 0){
-      questions[index] = {
-        ...questions[index],
-        ...cloudQ
-      };
-    }else{
-      questions.push(cloudQ);
-    }
+  questions = questions.filter(localQ => {
+    return !localQ.cloudId && !cloudIds.has(localQ.id);
   });
+
+  // 加入目前有權限讀取的雲端題目
+  questions.push(...cloudQuestions);
 
   save();
 
