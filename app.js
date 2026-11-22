@@ -44,6 +44,34 @@ async function extractPDFText(file){
   return fullText;
 }
 // ===== PDF 文字擷取功能結束 =====
+// ===== 免費版教材分析功能 =====
+function analyzePDFText(text){
+
+  if(!text || text.trim().length < 30){
+    throw new Error("教材文字太少，無法產生題目");
+  }
+
+  // 清理多餘空白
+  const cleanedText = text
+    .replace(/\s+/g, " ")
+    .replace(/[•●▪]/g, "")
+    .trim();
+
+  // 切分句子
+  const sentences = cleanedText
+    .split(/(?<=[。！？；.!?;])\s*/)
+    .map(s => s.trim())
+    .filter(s => s.length >= 12 && s.length <= 200);
+
+  // 排除頁碼及無意義內容
+  const usefulSentences = sentences.filter(s => {
+    return !/^(第?\s*\d+\s*頁?|[0-9]+)$/.test(s);
+  });
+
+  // 去除重複句子
+  return [...new Set(usefulSentences)];
+}
+// ===== 免費版教材分析功能結束 =====
 // ===== PDF 讀取測試按鈕 =====
 $("read-pdf-btn").addEventListener("click", async () => {
 console.log("PDF 讀取按鈕已被點擊！");
