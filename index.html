@@ -116,14 +116,17 @@
   </label>
 
   <label>
-    出題數量
-    <select id="pdf-question-count">
-      <option value="10">10 題</option>
-      <option value="20">20 題</option>
-      <option value="30">30 題</option>
-      <option value="50">50 題</option>
-    </select>
-  </label>
+  出題數量
+  <input
+    type="number"
+    id="pdf-question-count"
+    value="10"
+    min="1"
+    max="100"
+    step="1"
+    placeholder="請輸入題數"
+  >
+</label>
 
   <button type="button" id="generate-pdf-btn">
     開始產生題目
