@@ -76,6 +76,45 @@ function detectQuestionType(sentence){
   return "general";
 }
 // ===== 題型辨識功能結束 =====
+// ===== 名詞定義擷取功能 =====
+function extractDefinitionItems(sentences){
+
+  const definitions = [];
+
+  sentences.forEach(sentence => {
+
+    const patterns = [
+      /^(.{2,30}?)是指(.{5,120})$/,
+      /^(.{2,30}?)係指(.{5,120})$/,
+      /^(.{2,30}?)指的是(.{5,120})$/,
+      /^(.{2,30}?)的定義是(.{5,120})$/
+    ];
+
+    for(const pattern of patterns){
+
+      const match = sentence.match(pattern);
+
+      if(match){
+        const term = match[1].trim();
+        const definition = match[2].trim();
+
+        if(term.length >= 2 && definition.length >= 5){
+          definitions.push({
+            term,
+            definition,
+            source: sentence,
+            type: "definition"
+          });
+        }
+
+        break;
+      }
+    }
+  });
+
+  return definitions;
+}
+// ===== 名詞定義擷取功能結束 =====
 function analyzePDFText(text){
 
   if(!text || text.trim().length < 30){
