@@ -82,7 +82,56 @@
       <div id="quiz-area"></div>
     </section>
   </main>
+<!-- PDF 自動出題區 -->
+<section class="panel" id="pdf-generator">
+  <h2>📚 PDF 教材自動出題</h2>
 
+  <p>上傳課堂 PDF，從教材內容產生練習題。</p>
+
+  <label>
+    選擇 PDF 教材
+    <input
+      type="file"
+      id="pdf-file"
+      accept=".pdf,application/pdf"
+    >
+  </label>
+
+  <label>
+    科目
+    <input
+      type="text"
+      id="pdf-subject"
+      placeholder="例如：生物學"
+    >
+  </label>
+
+  <label>
+    章節
+    <input
+      type="text"
+      id="pdf-chapter"
+      placeholder="例如：細胞與能量"
+    >
+  </label>
+
+  <label>
+    出題數量
+    <select id="pdf-question-count">
+      <option value="10">10 題</option>
+      <option value="20">20 題</option>
+      <option value="30">30 題</option>
+      <option value="50">50 題</option>
+    </select>
+  </label>
+
+  <button type="button" id="generate-pdf-btn">
+    開始產生題目
+  </button>
+
+  <div id="pdf-status"></div>
+  <div id="pdf-question-preview"></div>
+</section>
   <dialog id="question-dialog" class="question-dialog">
     <form id="question-form">
       <div class="dialog-heading"><div><span class="eyebrow">BUILD YOUR LIBRARY</span><h2 id="dialog-title">新增題目</h2></div><button type="button" class="close-btn" id="close-dialog">×</button></div>
