@@ -44,6 +44,31 @@ async function extractPDFText(file){
   return fullText;
 }
 // ===== PDF 文字擷取功能結束 =====
+// ===== PDF 讀取測試按鈕 =====
+$("read-pdf-btn").addEventListener("click", async () => {
+
+  const file = $("pdf-file").files[0];
+
+  $("pdf-status").textContent = "正在讀取 PDF，請稍候...";
+  $("pdf-text-preview").textContent = "";
+
+  try {
+    const text = await extractPDFText(file);
+
+    $("pdf-text-preview").textContent =
+      text.slice(0, 5000);
+
+    $("pdf-status").textContent =
+      `讀取成功！共擷取 ${text.length} 個字元。`;
+
+  } catch(error) {
+    console.error("PDF 讀取失敗：", error);
+
+    $("pdf-status").textContent =
+      "讀取失敗：" + error.message;
+  }
+});
+// ===== PDF 讀取測試按鈕結束 =====
 // ===== 會員登入功能 =====
 
 let authMode = "login";
