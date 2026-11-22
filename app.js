@@ -316,7 +316,38 @@ async function loadQuestionsFromCloud(){
 
 
 const STORAGE_KEY = "study_quiz_questions_v1";
-const WRONG_KEY = "study_quiz_wrong_v1";
+const WRONG_KEY = "study_q
+// 合併本機與雲端題目
+async function syncQuestionsFromCloud(){
+  const cloudQuestions = await loadQuestionsFromCloud();
+
+  if(!cloudQuestions.length){
+    console.log("目前沒有可同步的雲端題目");
+    return;
+  }
+
+  cloudQuestions.forEach(cloudQ => {
+    const index = questions.findIndex(
+      localQ => localQ.id === cloudQ.id
+    );
+
+    if(index >= 0){
+      questions[index] = {
+        ...questions[index],
+        ...cloudQ
+      };
+    }else{
+      questions.push(cloudQ);
+    }
+  });
+
+  save();
+
+  console.log(
+    `雲端題目同步完成，共讀取 ${cloudQuestions.length} 題`
+  );
+}
+uiz_wrong_v1";
 const HISTORY_KEY = "study_quiz_history_v1";
 let questions = load(STORAGE_KEY, []);
 let wrongIds = load(WRONG_KEY, []);
