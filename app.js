@@ -115,6 +115,73 @@ function extractDefinitionItems(sentences){
   return definitions;
 }
 // ===== 名詞定義擷取功能結束 =====
+// ===== 四選一題目產生功能 =====
+function generateDefinitionQuestions(definitions, count){
+
+  const questions = [];
+
+  // 複製並隨機排列陣列
+  function shuffle(array){
+    const result = [...array];
+
+    for(let i = result.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [result[i], result[j]] = [result[j], result[i]];
+    }
+
+    return result;
+  }
+
+  // 至少需要四個不同的定義
+  if(definitions.length < 4){
+    throw new Error("教材中可辨識的名詞定義不足四個，暫時無法產生四選一題目。");
+  }
+
+  const selected = shuffle(definitions).slice(
+    0,
+    Math.min(count, definitions.length)
+  );
+
+  selected.forEach(item => {
+
+    // 找出其他三個不同的定義
+    const distractors = shuffle(
+      definitions.filter(d => d.term !== item.term)
+    ).slice(0, 3);
+
+    if(distractors.length < 3) return;
+
+    const options = shuffle([
+      {
+        text: item.definition,
+        correct: true
+      },
+      ...distractors.map(d => ({
+        text: d.definition,
+        correct: false
+      }))
+    ]);
+
+    const answer = options.findIndex(
+      option => option.correct
+    );
+
+    questions.push({
+      subject: $("pdf-subject").value.trim(),
+      chapter: $("pdf-chapter").value.trim(),
+      question: `根據教材，下列哪一項是「${item.term}」的正確定義？`,
+      options: options.map(option => option.text),
+      answer,
+      explanation: `正確答案為「${item.term}」的定義：${item.definition}`,
+      image: "",
+      visibility: "private"
+    });
+
+  });
+
+  return questions;
+}
+// ===== 四選一題目產生功能結束 =====
 function analyzePDFText(text){
 
   if(!text || text.trim().length < 30){
