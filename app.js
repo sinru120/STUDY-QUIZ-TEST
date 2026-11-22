@@ -327,7 +327,7 @@ async function loadQuestionsFromCloud(){
 
 
 const STORAGE_KEY = "study_quiz_questions_v1";
-const WRONG_KEY = "study_q
+const WRONG_KEY = "study_quiz_wrong_v1";
 // 合併本機與雲端題目
 async function syncQuestionsFromCloud(){
   const cloudQuestions = await loadQuestionsFromCloud();
