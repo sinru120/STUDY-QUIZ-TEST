@@ -358,7 +358,7 @@ async function syncQuestionsFromCloud(){
     `雲端題目同步完成，共讀取 ${cloudQuestions.length} 題`
   );
 }
-uiz_wrong_v1";
+
 const HISTORY_KEY = "study_quiz_history_v1";
 let questions = load(STORAGE_KEY, []);
 let wrongIds = load(WRONG_KEY, []);
