@@ -46,7 +46,7 @@ async function extractPDFText(file){
 // ===== PDF 文字擷取功能結束 =====
 // ===== PDF 讀取測試按鈕 =====
 $("read-pdf-btn").addEventListener("click", async () => {
-
+console.log("PDF 讀取按鈕已被點擊！");
   const file = $("pdf-file").files[0];
 
   $("pdf-status").textContent = "正在讀取 PDF，請稍候...";
