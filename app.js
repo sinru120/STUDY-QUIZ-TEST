@@ -9,6 +9,41 @@ const supabaseClient = window.supabase.createClient(
 console.log("Supabase 初始化成功！");
 console.log("Supabase 連線物件：", supabaseClient);
 const $ = (id) => document.getElementById(id);
+// ===== PDF 文字擷取功能 =====
+async function extractPDFText(file){
+
+  if(!file){
+    throw new Error("請先選擇 PDF 檔案");
+  }
+
+  if(file.type !== "application/pdf" &&
+     !file.name.toLowerCase().endsWith(".pdf")){
+    throw new Error("請上傳 PDF 格式的檔案");
+  }
+
+  const arrayBuffer = await file.arrayBuffer();
+
+  const pdf = await pdfjsLib.getDocument({
+    data: arrayBuffer
+  }).promise;
+
+  let fullText = "";
+
+  for(let pageNum = 1; pageNum <= pdf.numPages; pageNum++){
+
+    const page = await pdf.getPage(pageNum);
+    const content = await page.getTextContent();
+
+    const pageText = content.items
+      .map(item => item.str)
+      .join(" ");
+
+    fullText += `\n第 ${pageNum} 頁\n${pageText}\n`;
+  }
+
+  return fullText;
+}
+// ===== PDF 文字擷取功能結束 =====
 // ===== 會員登入功能 =====
 
 let authMode = "login";
