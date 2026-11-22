@@ -182,6 +182,101 @@ function generateDefinitionQuestions(definitions, count){
   return questions;
 }
 // ===== 四選一題目產生功能結束 =====
+// ===== PDF 自動出題按鈕 =====
+$("generate-pdf-btn").addEventListener("click", async () => {
+
+  const file = $("pdf-file").files[0];
+  const count = Number($("pdf-question-count").value);
+
+  $("pdf-status").textContent = "";
+  $("pdf-question-preview").textContent = "";
+
+  try {
+
+    if(!file){
+      throw new Error("請先選擇 PDF 教材。");
+    }
+
+    if(!Number.isInteger(count) || count < 1 || count > 100){
+      throw new Error("出題數量請輸入 1～100 的整數。");
+    }
+
+    $("pdf-status").textContent = "正在讀取教材，請稍候...";
+
+    // 讀取 PDF
+    const text = await extractPDFText(file);
+
+    // 分析教材句子
+    const sentences = analyzePDFText(text);
+
+    // 擷取名詞定義
+    const definitions = extractDefinitionItems(sentences);
+
+    // 產生選擇題
+    const generatedQuestions =
+      generateDefinitionQuestions(definitions, count);
+
+    if(!generatedQuestions.length){
+      throw new Error("目前無法從教材產生題目。");
+    }
+
+    // 顯示預覽
+    generatedQuestions.forEach((q, index) => {
+
+      const card = document.createElement("div");
+      card.style.border = "1px solid #ddd";
+      card.style.padding = "12px";
+      card.style.margin = "12px 0";
+      card.style.borderRadius = "8px";
+
+      const title = document.createElement("h3");
+      title.textContent = `第 ${index + 1} 題：${q.question}`;
+      card.appendChild(title);
+
+      q.options.forEach((option, optionIndex) => {
+
+        const line = document.createElement("p");
+
+        line.textContent =
+          `${["A","B","C","D"][optionIndex]}. ${option}`;
+
+        if(optionIndex === q.answer){
+          line.style.fontWeight = "bold";
+        }
+
+        card.appendChild(line);
+      });
+
+      const answer = document.createElement("p");
+      answer.textContent =
+        `正確答案：${["A","B","C","D"][q.answer]}`;
+
+      card.appendChild(answer);
+
+      const explanation = document.createElement("p");
+      explanation.textContent = `解析：${q.explanation}`;
+
+      card.appendChild(explanation);
+
+      $("pdf-question-preview").appendChild(card);
+    });
+
+    // 暫存本次產生的題目
+    window.generatedPDFQuestions = generatedQuestions;
+
+    $("pdf-status").textContent =
+      `成功產生 ${generatedQuestions.length} 題！請檢查下方題目。`;
+
+  } catch(error) {
+
+    console.error("PDF 自動出題失敗：", error);
+
+    $("pdf-status").textContent =
+      "產生失敗：" + error.message;
+  }
+
+});
+// ===== PDF 自動出題按鈕結束 =====
 function analyzePDFText(text){
 
   if(!text || text.trim().length < 30){
