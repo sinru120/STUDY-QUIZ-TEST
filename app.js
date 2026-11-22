@@ -162,7 +162,26 @@ function extractDefinitionItems(sentences){
 function generateDefinitionQuestions(definitions, count){
 
   const questions = [];
+// 合併相同名詞的定義內容
+const groupedDefinitions = {};
 
+definitions.forEach(item => {
+
+  if(!groupedDefinitions[item.term]){
+    groupedDefinitions[item.term] = [];
+  }
+
+  groupedDefinitions[item.term].push(item.definition);
+
+});
+
+definitions = Object.entries(groupedDefinitions).map(
+  ([term, contents]) => ({
+    term,
+    definition: contents.join("；"),
+    type: "definition"
+  })
+);
   // 複製並隨機排列陣列
   function shuffle(array){
     const result = [...array];
