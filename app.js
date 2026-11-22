@@ -87,18 +87,24 @@ function extractDefinitionItems(sentences){
       /^(.{2,30}?)是指(.{5,120})$/,
       /^(.{2,30}?)係指(.{5,120})$/,
       /^(.{2,30}?)指的是(.{5,120})$/,
-      /^(.{2,30}?)的定義是(.{5,120})$/
+      /^(.{2,30}?)的定義是(.{5,120})$/,
+      /^(.{2,30}?)[：:]\s*(.{5,120})$/
     ];
 
     for(const pattern of patterns){
 
-      const match = sentence.match(pattern);
+      const match = sentence.trim().match(pattern);
 
       if(match){
+
         const term = match[1].trim();
         const definition = match[2].trim();
 
-        if(term.length >= 2 && definition.length >= 5){
+        if(
+          term.length >= 2 &&
+          term.length <= 30 &&
+          definition.length >= 5
+        ){
           definitions.push({
             term,
             definition,
@@ -114,6 +120,7 @@ function extractDefinitionItems(sentences){
 
   return definitions;
 }
+// ===== 名詞定義擷取功能結束 =====
 // ===== 名詞定義擷取功能結束 =====
 // ===== 四選一題目產生功能 =====
 function generateDefinitionQuestions(definitions, count){
