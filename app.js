@@ -594,4 +594,15 @@ function parseCSV(text){
   const rows=text.trim().split(/\r?\n/).map(line=>line.split(",").map(v=>v.trim().replace(/^"|"$/g,"")));
   return rows.slice(1).map((r,i)=>({id:uid(),subject:r[0],chapter:r[1],question:r[2],options:r.slice(3,7),answer:"ABCD".indexOf((r[7]||"A").toUpperCase()),explanation:r[8]||""})).filter(q=>q.options.length===4);
 }
-renderHome();
+
+// 網站啟動與雲端題目同步
+async function initializeApp(){
+  renderHome();
+
+  await syncQuestionsFromCloud();
+
+  renderHome();
+}
+
+initializeApp();
+
