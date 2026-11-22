@@ -208,9 +208,11 @@ definitions = Object.entries(groupedDefinitions).map(
 
     // 找出其他三個不同的定義
     const distractors = shuffle(
-      definitions.filter(d => d.term !== item.term)
-    ).slice(0, 3);
-
+  definitions.filter(d =>
+    d.term !== item.term &&
+    d.definition !== item.definition
+  )
+).slice(0, 3);
     if(distractors.length < 3) return;
 
     const options = shuffle([
