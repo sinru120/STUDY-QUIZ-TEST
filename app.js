@@ -45,6 +45,37 @@ async function extractPDFText(file){
 }
 // ===== PDF 文字擷取功能結束 =====
 // ===== 免費版教材分析功能 =====
+// ===== 題型辨識功能 =====
+function detectQuestionType(sentence){
+
+  // 數據題
+  if(/[0-9０-９]+/.test(sentence)){
+    return "data";
+  }
+
+  // 比較題
+  if(/相比|相較|比較|差異|不同|高於|低於|增加|減少/.test(sentence)){
+    return "compare";
+  }
+
+  // 因果題
+  if(/因為|因此|所以|導致|造成|使得|原因|結果/.test(sentence)){
+    return "cause";
+  }
+
+  // 定義題
+  if(/是指|稱為|定義|又稱|係指|意義/.test(sentence)){
+    return "definition";
+  }
+
+  // 特徵與功能題
+  if(/功能|作用|特徵|特色|負責|具有|包含|組成/.test(sentence)){
+    return "concept";
+  }
+
+  return "general";
+}
+// ===== 題型辨識功能結束 =====
 function analyzePDFText(text){
 
   if(!text || text.trim().length < 30){
