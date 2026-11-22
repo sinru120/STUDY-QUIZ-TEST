@@ -128,9 +128,20 @@ async function checkAuth() {
 }
 
 // 監聽登入狀態變化
+
 supabaseClient.auth.onAuthStateChange((event, session) => {
   updateAuthUI(session?.user || null);
+
+  if(event === "SIGNED_IN"){
+    setTimeout(() => {
+      syncQuestionsFromCloud().then(() => {
+        renderHome();
+        renderManage();
+      });
+    }, 0);
+  }
 });
+
 
 checkAuth();
 
