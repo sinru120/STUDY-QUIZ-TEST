@@ -330,19 +330,25 @@ const STORAGE_KEY = "study_quiz_questions_v1";
 const WRONG_KEY = "study_quiz_wrong_v1";
 // 合併本機與雲端題目
 async function syncQuestionsFromCloud(){
+  const user = await getCurrentUser();
   const cloudQuestions = await loadQuestionsFromCloud();
 
-  // 保留尚未同步到雲端的本機題目
-  const cloudIds = new Set(
-    cloudQuestions.map(q => q.id)
-  );
+  if(user){
+    // 已登入：保留尚未同步的本機題目
+    const cloudIds = new Set(
+      cloudQuestions.map(q => q.id)
+    );
 
-  questions = questions.filter(localQ => {
-    return !localQ.cloudId && !cloudIds.has(localQ.id);
-  });
+    questions = questions.filter(localQ => {
+      return !localQ.cloudId && !cloudIds.has(localQ.id);
+    });
 
-  // 加入目前有權限讀取的雲端題目
-  questions.push(...cloudQuestions);
+    questions.push(...cloudQuestions);
+
+  }else{
+    // 未登入：只顯示雲端允許公開的題目
+    questions = cloudQuestions;
+  }
 
   save();
 
